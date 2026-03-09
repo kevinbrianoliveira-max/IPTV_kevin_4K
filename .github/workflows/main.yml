@@ -1,0 +1,25 @@
+name: Atualizar Painel Kevin 4K
+on:
+  repository_dispatch:
+    types: [whatsapp_update]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Instalar Python
+        run: pip install requests
+      - name: Adicionar ao Banco de Dados
+        run: |
+          echo "${{ github.event.client_payload.comando }}" >> links.txt
+      - name: Rodar Gerador
+        run: python gerar_lista.py
+      - name: Salvar e Publicar
+        run: |
+          git config --local user.email "bot@github.com"
+          git config --local user.name "KevinBot"
+          git add .
+          git commit -m "Update via WhatsApp" || echo "Sem mudanças"
+          git push
